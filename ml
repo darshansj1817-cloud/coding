@@ -819,3 +819,40 @@ print(
 )
 
 
+LINEAR REGRESSION IRIS
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# Load Iris dataset
+iris = load_iris()
+
+# Use Sepal Length as X and Petal Width as y
+X = iris.data[:, 0].reshape(-1, 1)    # Sepal Length
+y = iris.data[:, 3]                   # Petal Width
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=1/3, random_state=0
+)
+
+# Fitting Linear Regression to the training set
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = regressor.predict(X_test)
+
+# Plot the training data, the fitted line, and the test data
+plt.scatter(X_train, y_train, color='red', label='Training Data')
+plt.plot(X_train, regressor.predict(X_train), color='blue')
+plt.scatter(X_test, y_test, color='yellow')
+
+plt.xlabel('Sepal Length')
+plt.ylabel('Petal Width')
+plt.title('Petal Width vs Sepal Length')
+plt.show()
+
