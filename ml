@@ -1,858 +1,1167 @@
-KNEIGHBORS
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn import datasets
+MAX MIN
+package maxmin;
 
-# Load Iris dataset
-iris = datasets.load_iris()
-print("Iris Data set loaded...")
+import java.util.*;
 
-# Split dataset into training and testing
-X_train, X_test, y_train, y_test = train_test_split(
-    iris.data,
-    iris.target,
-    test_size=0.1
-)
+public class Max_min {
 
-print("Dataset is split into training and testing...")
-print("Size of training data and its label", X_train.shape, y_train.shape)
-print("Size of test data and its label", X_test.shape, y_test.shape)
+    static Scanner sc = new Scanner(System.in);
 
-# Display class labels
-for i in range(len(iris.target_names)):
-    print("label", i, "-", str(iris.target_names[i]))
-
-# Create and train KNN classifier
-classifier = KNeighborsClassifier(n_neighbors=1)
-classifier.fit(X_train, y_train)
-
-# Predict test data
-y_pred = classifier.predict(X_test)
-
-print("Results of classification using KNN with k=1")
-
-for r in range(len(X_test)):
-    print(
-        "Sample:", str(X_test[r]),
-        "Actual label:", str(y_test[r]),
-        "Predicted label:", str(y_pred[r])
-    )
+    static int max = Integer.MIN_VALUE;
+    static int min = Integer.MAX_VALUE;
 
-# Accuracy
-print("Classification Accuracy:", classifier.score(X_test, y_test))
-
-# Confusion Matrix and Classification Report
-from sklearn.metrics import classification_report, confusion_matrix
-
-print("Confusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+    static int a[];
+    static int size;
 
-print("Accuracy Metrics:")
-print(classification_report(y_test, y_pred))
-
-NAIVE BAYES
-from sklearn.naive_bayes import GaussianNB
-from sklearn.datasets import load_iris
-from sklearn import metrics
-from sklearn.model_selection import train_test_split as split
-
-# Load Iris dataset
-dataset = load_iris()
-
-x = dataset.data
-y = dataset.target
-
-# Split dataset into training and testing sets
-x_train, x_test, y_train, y_test = split(
-    x,
-    y,
-    test_size=0.2,
-    random_state=1
-)
-
-# Create and train Gaussian Naive Bayes classifier
-gnb = GaussianNB()
-classifier = gnb.fit(x_train, y_train)
-
-# Predict test data
-y_pred = classifier.predict(x_test)
+    static void MaxMin(int i, int j) {
 
-# Display results
-print("Accuracy Metrics :")
-print(metrics.classification_report(y_test, y_pred))
-
-print("The accuracy of metrics is:",
-      metrics.accuracy_score(y_test, y_pred))
-
-print("Confusion matrix:")
-print(metrics.confusion_matrix(y_test, y_pred))
+        int min1, max1, mid;
 
-SVM RANDOM
-import numpy as np
-import matplotlib.pyplot as plt
+        if (i == j) {
+            max = min = a[i];
+        }
 
-from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeRegressor
-
-# Generate data
-x = np.linspace(0, 10, 100)
-
-y_linear = 2 * x + 3 + np.random.randn(100) * 0.5
-y_complex = np.sin(x) + np.random.randn(100) * 0.2
-
-# Models
-models = [
-    LinearRegression(),
-    DecisionTreeRegressor(max_depth=5)
-]
-
-for model in models:
-
-    # Train on linear data
-    model.fit(x.reshape(-1, 1), y_linear)
-    y_pred_linear = model.predict(x.reshape(-1, 1))
-
-    # Train on complex data
-    model.fit(x.reshape(-1, 1), y_complex)
-    y_pred_complex = model.predict(x.reshape(-1, 1))
-
-    # Plot linear data
-    plt.figure(figsize=(6, 2))
-    plt.plot(x, y_linear, label='True Data (Linear)')
-    plt.plot(x, y_pred_linear, label='Predicted')
-    plt.legend()
-    plt.show()
+        else if (i == j - 1)
 
-    # Plot complex data
-    plt.figure(figsize=(6, 2))
-    plt.plot(x, y_complex, label='True Data (Complex)')
-    plt.plot(x, y_pred_complex, label='Predicted')
-    plt.legend()
-    plt.show()
-
+            if (a[i] < a[j]) {
+                max = a[j];
+                min = a[i];
+            }
 
-SVM IRIS
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, confusion_matrix
-
-# Load Iris dataset
-iris = datasets.load_iris()
-
-# Split dataset into training and testing sets
-xtrain, xtest, ytrain, ytest = train_test_split(
-    iris.data[:, :2],
-    iris.target,
-    test_size=0.3,
-    random_state=42
-)
-
-# Feature scaling
-scaler = StandardScaler()
-
-xtrain = scaler.fit_transform(xtrain)
-xtest = scaler.transform(xtest)
-
-# Create and train SVM model
-model = SVC(
-    kernel='linear',
-    C=2
-)
-
-model.fit(xtrain, ytrain)
-
-# Predict test data
-ypred = model.predict(xtest)
-
-# Display results
-print(f"Accuracy: {accuracy_score(ytest, ypred) * 100:.2f}%")
-print("Confusion Matrix:")
-print(confusion_matrix(ytest, ypred))
-
-
-DECISION TREE ID3
-# Import necessary libraries
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, classification_report
-
-# Load the Iris dataset
-iris = load_iris()
-
-X = iris.data
-y = iris.target
-
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.3,
-    random_state=42
-)
-
-# Initialize the Decision Tree Classifier with entropy criterion (ID3)
-clf = DecisionTreeClassifier(criterion='entropy')
-
-# Train the classifier
-clf.fit(X_train, y_train)
-
-# Predict the labels for the test set
-y_pred = clf.predict(X_test)
-
-# Calculate and print the accuracy
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {accuracy * 100:.2f}%")
-
-# Print the classification report
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred))
-
-# Print the first 10 actual vs predicted labels
-print("\nActual vs Predicted Labels for the First 10 Samples:")
-
-for actual, predicted in zip(y_test[:10], y_pred[:10]):
-    print(f"Actual: {actual}, Predicted: {predicted}")
-
-ADA BOOST
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
-
-# Load dataset
-iris = load_iris()
-
-X = iris.data
-y = iris.target
-
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)
-
-# Base learner (weak learner)
-base_model = DecisionTreeClassifier(max_depth=1)
-
-# AdaBoost model
-ada_clf = AdaBoostClassifier(
-    estimator=base_model,
-    n_estimators=50,
-    learning_rate=1.0,
-    random_state=42
-)
-
-# Train the model
-ada_clf.fit(X_train, y_train)
-
-# Predict test data
-y_pred_ada = ada_clf.predict(X_test)
-
-# Evaluation
-print("AdaBoost Accuracy:",
-      accuracy_score(y_test, y_pred_ada))
-
-print("\nClassification Report:")
-print(
-    classification_report(
-        y_test,
-        y_pred_ada,
-        target_names=iris.target_names
-    )
-)
-
-GRADIENT BOOST
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
-
-# Load dataset
-iris = load_iris()
-
-X = iris.data
-y = iris.target
-
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)
-
-# Gradient Boosting model
-gb_clf = GradientBoostingClassifier(
-    n_estimators=100,
-    learning_rate=0.1,
-    max_depth=3,
-    random_state=42
-)
-
-# Train the model
-gb_clf.fit(X_train, y_train)
-
-# Predict test data
-y_pred_gb = gb_clf.predict(X_test)
-
-# Evaluation
-print(
-    "Gradient Boosting Accuracy:",
-    accuracy_score(y_test, y_pred_gb)
-)
-
-print("\nClassification Report:")
-print(
-    classification_report(
-        y_test,
-        y_pred_gb,
-        target_names=iris.target_names
-    )
-)
-
-
-LINEAR REGRESSION 
-
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-
-# Import dataset
-dataset = pd.read_csv('Linear Regression.csv')
-
-X = dataset.iloc[:, :-1].values
-y = dataset.iloc[:, 1].values
-
-# Split the data into training and testing sets
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=1/3,
-    random_state=0
-)
-
-# Fitting Linear Regression to training set
-from sklearn.linear_model import LinearRegression
-
-regressor = LinearRegression()
-regressor.fit(X_train, y_train)
-
-# Make predictions on the test set
-y_pred = regressor.predict(X_test)
-
-# Plot the training data, fitted line, and test data
-plt.scatter(
-    X_train,
-    y_train,
-    color='red',
-    label='Training Data'
-)
-
-plt.plot(
-    X_train,
-    regressor.predict(X_train),
-    color='blue'
-)
-
-plt.scatter(
-    X_test,
-    y_test,
-    color='yellow',
-    label='Test Data'
-)
-
-plt.plot(
-    X_train,
-    regressor.predict(X_train),
-    color='blue'
-)
-
-plt.xlabel('Years')
-plt.ylabel('Salary')
-plt.title('Salary vs Years')
-plt.legend()
-
-plt.show()
-
-LOGISTIC REGRESSION 
-import numpy as np
-import matplotlib.pyplot as plt
-
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix
-
-# Load Iris dataset
-iris = datasets.load_iris()
-
-X = iris.data
-y = iris.target
-
-# Split dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.3,
-    random_state=0
-)
-
-# Feature scaling
-scaler = StandardScaler()
-
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
-
-# Create and train Logistic Regression model
-model = LogisticRegression()
-
-model.fit(X_train, y_train)
-
-# Predict test data
-y_pred = model.predict(X_test)
-
-# Confusion Matrix
-cm = confusion_matrix(y_test, y_pred)
-
-print("Confusion Matrix:")
-print(cm)
-
-# Accuracy
-accuracy = accuracy_score(y_test, y_pred)
-
-print("Accuracy:", accuracy)
-
-KMEANS
-import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.cluster import KMeans
-import pandas as pd
-import numpy as np
-
-# Import Iris dataset
-iris = datasets.load_iris()
-
-X = pd.DataFrame(iris.data)
-X.columns = [
-    'Sepal_Length',
-    'Sepal_Width',
-    'Petal_Length',
-    'Petal_Width'
-]
-
-y = pd.DataFrame(iris.target)
-y.columns = ['Targets']
-
-# Build the K-Means Model
-model = KMeans(n_clusters=3)
-
-# Train the model
-model.fit(X)
-
-# Visualize the clustering results
-plt.figure(figsize=(14, 14))
-
-colormap = np.array([
-    'red',
-    'lime',
-    'black'
-])
-
-# Plot the Original Classifications using Petal Features
-plt.subplot(2, 2, 1)
-
-plt.scatter(
-    X.Petal_Length,
-    X.Petal_Width,
-    c=colormap[y.Targets],
-    s=40
-)
-
-plt.title('Real Clusters')
-plt.xlabel('Petal Length')
-plt.ylabel('Petal Width')
-
-plt.show()
-
-# Plot the Model's Classifications
-plt.subplot(2, 2, 2)
-
-plt.scatter(
-    X.Petal_Length,
-    X.Petal_Width,
-    c=colormap[model.labels_],
-    s=40
-)
-
-plt.title('K-Means Clustering')
-plt.xlabel('Petal Length')
-plt.ylabel('Petal Width')
-
-plt.show()
-
-EM ALGORITHM 
-
-import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.cluster import KMeans
-import pandas as pd
-import numpy as np
-
-# Import Iris dataset
-iris = datasets.load_iris()
-
-X = pd.DataFrame(iris.data)
-X.columns = [
-    'Sepal_Length',
-    'Sepal_Width',
-    'Petal_Length',
-    'Petal_Width'
-]
-
-y = pd.DataFrame(iris.target)
-y.columns = ['Targets']
-
-# Build the K-Means Model
-model = KMeans(n_clusters=3)
-
-# model.labels_ gives cluster number for each sample
-model.fit(X)
-
-# Visualize the clustering results
-plt.figure(figsize=(14, 14))
+            else {
+                max = a[i];
+                min = a[j];
+            }
 
-colormap = np.array([
-    'red',
-    'lime',
-    'black'
-])
+        else {
 
-# General EM for GMM
-from sklearn import preprocessing
+            mid = (i + j) / 2;
 
-# Standardize the data
-scaler = preprocessing.StandardScaler()
-scaler.fit(X)
+            MaxMin(i, mid);
 
-xsa = scaler.transform(X)
+            max1 = max;
+            min1 = min;
 
-xs = pd.DataFrame(
-    xsa,
-    columns=X.columns
-)
+            MaxMin(mid + 1, j);
 
-# Gaussian Mixture Model (EM Algorithm)
-from sklearn.mixture import GaussianMixture
+            if (max < max1)
+                max = max1;
 
-gmm = GaussianMixture(n_components=3)
+            if (min > min1)
+                min = min1;
+        }
+    }
 
-gmm.fit(xs)
+    public static void inputArray() {
 
-gmm_y = gmm.predict(xs)
+        System.out.println("Enter array elements");
 
-# Plot GMM Clustering
-plt.subplot(2, 2, 3)
+        for (int i = 0; i < size; i++)
+            a[i] = sc.nextInt();
+    }
 
-plt.scatter(
-    X.Petal_Length,
-    X.Petal_Width,
-    c=colormap[gmm_y],
-    s=40
-)
+    public static void main(String[] args) {
 
-plt.title('GMM Clustering')
-plt.xlabel('Petal Length')
-plt.ylabel('Petal Width')
+        System.out.println("Enter size of array");
 
-plt.show()
+        size = sc.nextInt();
 
-print(
-    'Observation: The GMM using EM algorithm based clustering '
-    'matched the true labels more closely than the K-Means.'
-)
+        a = new int[size];
 
-PCA
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+        inputArray();
 
-%matplotlib inline
+        long start = System.nanoTime();
 
-from sklearn.datasets import load_breast_cancer
+        MaxMin(0, size - 1);
 
-# Load Breast Cancer dataset
-cancer = load_breast_cancer()
+        long end = System.nanoTime();
 
-# Display dataset keys
-cancer.keys()
+        System.out.println("Max value: " + max + " Min value: " + min);
 
-# Display feature names
-print(cancer['feature_names'])
+        System.out.println("Time: " + (end - start) + " ns");
+    }
+}
 
-# Display target labels
-for i in range(len(cancer.target_names)):
-    print("Label", i, "-", str(cancer.target_names[i]))
+KNAPSACK
+import java.util.Scanner;
 
-# Display dataset description
-print(cancer['DESCR'])
+class GreedyKnapsack {
 
-# Create DataFrame
-df = pd.DataFrame(
-    cancer['data'],
-    columns=cancer['feature_names']
-)
+    private int n;
+    private int m;
 
-# Display first 5 rows
-df.head(5)
+    private int[] w;
+    private int[] p;
 
-# Feature Scaling
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import StandardScaler
+    public GreedyKnapsack(int n, int m, int[] w, int[] p) {
 
-scaler = StandardScaler()
+        this.n = n;
+        this.m = m;
+        this.w = w;
+        this.p = p;
+    }
 
-scaler.fit(df)
+    public void greedy() {
 
-scaled_data = scaler.transform(df)
+        float sum = 0, max;
+        int i, j = 0;
 
-# Apply PCA
-from sklearn.decomposition import PCA
+        while (m >= 0) {
 
-pca = PCA(n_components=2)
+            max = 0;
 
-pca.fit(scaled_data)
+            for (i = 0; i < n; i++) {
 
-x_pca = pca.transform(scaled_data)
+                if (((float) p[i]) / ((float) w[i]) > max) {
 
-# Display shapes
-print("Original Data Shape:", scaled_data.shape)
-print("Reduced Data Shape:", x_pca.shape)
+                    max = ((float) p[i]) / ((float) w[i];
+                    j = i;
+                }
+            }
 
-# Scatter Plot of Principal Components
-plt.figure(figsize=(8, 6))
+            if (w[j] > m) {
 
-plt.scatter(
-    x_pca[:, 0],
-    x_pca[:, 1],
-    c=cancer['target']
-)
+                System.out.println("Quantity of item number: "
+                        + (j + 1) + " added is "
+                        + (float) m / w[j]);
 
-plt.xlabel('First Principal Component')
-plt.ylabel('Second Principal Component')
+                sum = sum + m * max;
+                m = -1;
+            }
 
-plt.title('PCA of Breast Cancer Dataset')
+            else {
 
-plt.show()
+                System.out.println("Quantity of item number: "
+                        + (j + 1) + " added fully ");
 
-AND
-def activation(out, threshold):
-    if out >= threshold:
-        return 1
-    else:
-        return 0
+                m = m - w[j];
 
+                sum = sum + (float) p[j];
 
-def perceptron(and_input):
+                p[j] = 0;
+            }
+        }
 
-    a = [0, 0, 1, 1]
-    b = [0, 1, 0, 1]
-    y = [0, 0, 0, 1]
+        System.out.println("The total profit is : " + sum);
+    }
+}
 
-    w = [1.4, 1.5]
+public class knapsack {
 
-    threshold = 1
-    learning_rate = 0.1
+    public static void main(String[] args) {
 
-    i = 0
+        int i, max_qty, m, n;
 
-    print("Perceptron Training : ")
-    print("######################")
-    print("------------")
+        Scanner sc = new Scanner(System.in);
 
-    while i < 4:
+        int w[] = new int[10];
+        int p[] = new int[10];
 
-        summation = a[i] * w[0] + b[i] * w[1]
+        System.out.println("Enter no of items : ");
+        n = sc.nextInt();
 
-        o = activation(summation, threshold)
+        System.out.println("Enter the weights of each items : ");
 
-        print("Input : " + str(a[i]) + " , " + str(b[i]))
-        print("Weights : " + str(w[0]) + " , " + str(w[1]))
-        print(
-            "Summation : " + str(summation) +
-            " Threshold : " + str(threshold)
-        )
-        print(
-            "Actual Output : " + str(y[i]) +
-            " Predicted Output : " + str(o)
-        )
+        for (i = 0; i < n; i++)
+            w[i] = sc.nextInt();
 
-        if o != y[i]:
+        System.out.println("Enter the profit of each items : ");
 
-            print("____________\nUpdating Weights")
+        for (i = 0; i < n; i++)
+            p[i] = sc.nextInt();
 
-            w[0] = w[0] + learning_rate * (y[i] - o) * a[i]
+        System.out.println("Enter the knapsack capacity : ");
 
-            print("w[0] =", w[0])
+        max_qty = sc.nextInt();
 
-            w[1] = w[1] + learning_rate * (y[i] - o) * b[i]
+        m = max_qty;
 
-            print(
-                "Updated Weights : " +
-                str(w[0]) + " , " + str(w[1])
-            )
+        GreedyKnapsack gks = new GreedyKnapsack(n, m, w, p);
 
-            i = -1
+        gks.greedy();
 
-            print("\nWeights Updated Training Again : ")
-            print("###################################")
+        sc.close();
+    }
+}
+JOB SEQUENCE
+package greedy;
 
-        i = i + 1
+import java.util.*;
 
-        print("---------------")
+class Job {
 
-    summation = and_input[0] * w[0] + and_input[1] * w[1]
+    int id;
+    int deadline;
+    int profit;
 
-    return activation(summation, threshold)
+    public Job(int id, int deadline, int profit) {
 
+        this.id = id;
+        this.deadline = deadline;
+        this.profit = profit;
+    }
+}
 
-and_input = [1, 1]
+public class Jobsequence {
 
-print(
-    "AND Gate Output for " +
-    str(and_input) +
-    " : " +
-    str(perceptron(and_input))
-)
+    public static void main(String[] args) {
 
-OR
+        Scanner sc = new Scanner(System.in);
 
-def activation(out, threshold):
-    if out >= threshold:
-        return 1
-    else:
-        return 0
+        System.out.println("Enter the number of jobs:");
 
+        int n = sc.nextInt();
 
-def perceptron(or_input):
+        Job[] jobs = new Job[n];
 
-    a = [0, 0, 1, 1]
-    b = [0, 1, 0, 1]
-    y = [0, 1, 1, 1]
+        for (int i = 0; i < n; i++) {
 
-    w = [0.0, 0.3]
+            System.out.println("Enter id, deadline and profit for job "
+                    + (i + 1) + " :");
 
-    threshold = 0.4
-    learning_rate = 0.5
+            int id = sc.nextInt();
+            int deadline = sc.nextInt();
+            int profit = sc.nextInt();
 
-    i = 0
+            jobs[i] = new Job(id, deadline, profit);
+        }
 
-    print("Perceptron Training : ")
-    print("######################")
-    print("------------")
+        System.out.println("Max profit sequence of jobs: ");
 
-    while i < 4:
+        int maxprofit = jobSequencing(jobs, n);
 
-        summation = a[i] * w[0] + b[i] * w[1]
+        System.out.println("Maximum profit: " + maxprofit);
+    }
 
-        o = activation(summation, threshold)
+    public static int jobSequencing(Job[] jobs, int n) {
 
-        print("Input : " + str(a[i]) + " , " + str(b[i]))
-        print("Weights : " + str(w[0]) + " , " + str(w[1]))
-        print(
-            "Summation : " + str(summation) +
-            " Threshold : " + str(threshold)
-        )
-        print(
-            "Actual Output : " + str(y[i]) +
-            " Predicted Output : " + str(o)
-        )
+        Arrays.sort(jobs, (a, b) -> b.profit - a.profit);
 
-        if o != y[i]:
+        boolean[] result = new boolean[n];
+        int jobSequence[] = new int[n];
 
-            print("____________\nUpdating Weights")
+        Arrays.fill(result, false);
+        Arrays.fill(jobSequence, -1);
 
-            w[0] = w[0] + learning_rate * (y[i] - o) * a[i]
+        int maxProfit = 0;
 
-            print("w[0] =", w[0])
+        for (int i = 0; i < n; i++) {
 
-            w[1] = w[1] + learning_rate * (y[i] - o) * b[i]
+            for (int j = Math.min(n, jobs[i].deadline) - 1;
+                 j >= 0;
+                 j--) {
 
-            print(
-                "Updated Weights : " +
-                str(w[0]) + " , " + str(w[1])
-            )
+                if (result[j] == false) {
 
-            i = -1
+                    result[j] = true;
+                    jobSequence[j] = i;
 
-            print("\nWeights Updated Training Again : ")
-            print("###################################")
+                    maxProfit += jobs[i].profit;
 
-        i = i + 1
+                    break;
+                }
+            }
+        }
 
-        print("---------------")
+        for (int i = 0; i < n; i++) {
 
-    summation = or_input[0] * w[0] + or_input[1] * w[1]
+            if (jobSequence[i] != -1) {
 
-    return activation(summation, threshold)
+                System.out.print(
+                        jobs[jobSequence[i]].id + " ");
+            }
+        }
 
+        System.out.println();
 
-or_input = [1, 1]
+        return maxProfit;
+    }
+}
+PRIMS
+import java.util.*;
 
-print(
-    "OR Gate Output for " +
-    str(or_input) +
-    " : " +
-    str(perceptron(or_input))
-)
+public class prims {
 
+    public static void main(String[] args) {
 
-LINEAR REGRESSION IRIS
+        int cost[][] = new int[10][10];
+        int i, j, mincost = 0;
 
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+        Scanner in = new Scanner(System.in);
 
-# Load Iris dataset
-iris = load_iris()
+        System.out.println("********* PRIMS ALGORITHM *********");
 
-# Use Sepal Length as X and Petal Width as y
-X = iris.data[:, 0].reshape(-1, 1)    # Sepal Length
-y = iris.data[:, 3]                   # Petal Width
+        System.out.println("Enter the number of nodes");
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=1/3, random_state=0
-)
+        int n = in.nextInt();
 
-# Fitting Linear Regression to the training set
-regressor = LinearRegression()
-regressor.fit(X_train, y_train)
+        System.out.println("Enter the cost matrix");
 
-# Make predictions on the test set
-y_pred = regressor.predict(X_test)
+        for (i = 1; i <= n; i++) {
 
-# Plot the training data, the fitted line, and the test data
-plt.scatter(X_train, y_train, color='red', label='Training Data')
-plt.plot(X_train, regressor.predict(X_train), color='blue')
-plt.scatter(X_test, y_test, color='yellow')
+            for (j = 1; j <= n; j++) {
 
-plt.xlabel('Sepal Length')
-plt.ylabel('Petal Width')
-plt.title('Petal Width vs Sepal Length')
-plt.show()
+                cost[i][j] = in.nextInt();
+            }
+        }
 
+        System.out.println("The entered cost matrix is");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++) {
+
+                System.out.print(cost[i][j] + "\t");
+            }
+
+            System.out.println();
+        }
+
+        System.out.println(
+                "Minimum Spanning Tree Edges and costs are : ");
+
+        mincost = pr(cost, n, mincost);
+
+        System.out.println(
+                "The minimum spanning tree cost is : " + mincost);
+
+        System.out.println(
+                "******* ********************* *******");
+    }
+
+    static int pr(int cost[][], int n, int mincost) {
+
+        int nearV[] = new int[10];
+        int t[][] = new int[10][3];
+        int u = 0, i, j, k;
+
+        for (i = 2; i <= n; i++)
+            nearV[i] = 1;
+
+        nearV[1] = 0;
+
+        for (i = 1; i < n; i++) {
+
+            int min = 999;
+
+            for (j = 1; j <= n; j++) {
+
+                if (nearV[j] != 0 &&
+                    cost[j][nearV[j]] < min) {
+
+                    min = cost[j][nearV[j]];
+                    u = j;
+                }
+            }
+
+            t[i][1] = u;
+            t[i][2] = nearV[u];
+
+            mincost += min;
+
+            nearV[u] = 0;
+
+            for (k = 1; k <= n; k++) {
+
+                if (nearV[k] != 0 &&
+                    cost[k][nearV[k]] > cost[k][u])
+
+                    nearV[k] = u;
+            }
+
+            System.out.println(
+                    i + " Minimum edge is "
+                    + t[i][1] + ","
+                    + t[i][2]
+                    + " and its cost is :" + min);
+        }
+
+        return mincost;
+    }
+}
+KRUSKALS
+import java.util.Scanner;
+
+public class kruskalUnion {
+
+    static int[] parent = new int[50];
+    static int[][] cost = new int[10][10];
+
+    static int a, b, i, j, u, v, n,
+               min, noe = 1, mincost = 0;
+
+    static int find(int w) {
+
+        while (parent[w] != 0)
+            w = parent[w];
+
+        return w;
+    }
+
+    static void union() {
+
+        if (u != v) {
+
+            noe++;
+
+            System.out.println(
+                    noe - 1 +
+                    "Edge(" + a + "," + b + ")=" + min);
+
+            mincost += min;
+
+            parent[v] = u;
+        }
+
+        cost[a][b] = cost[b][a] = 999;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner read = new Scanner(System.in);
+
+        System.out.println("Enter the no. of vertices:");
+
+        n = read.nextInt();
+
+        System.out.println(
+                "Enter the cost adjacency matrix, 999 for no direct path:");
+
+        for (i = 1; i <= n; i++)
+            for (j = 1; j <= n; j++)
+                cost[i][j] = read.nextInt();
+
+        while (noe < n) {
+
+            min = 999;
+
+            for (i = 1; i <= n; i++) {
+
+                for (j = 1; j <= n; j++) {
+
+                    if (cost[i][j] < min) {
+
+                        min = cost[i][j];
+
+                        a = u = i;
+                        b = v = j;
+                    }
+                }
+            }
+
+            u = find(u);
+            v = find(v);
+
+            union();
+        }
+
+        System.out.println(
+                "minimum cost =" + mincost);
+    }
+}
+WARSHALLS
+import java.util.Scanner;
+
+public class Warshalls {
+
+    void warsh(int[][] w, int n) {
+
+        int i, j, k;
+
+        for (k = 1; k <= n; k++)
+
+            for (i = 1; i <= n; i++)
+
+                for (j = 1; j <= n; j++)
+
+                    w[i][j] =
+                    (w[i][j] != 0) ||
+                    ((w[i][k] != 0) &&
+                    (w[k][j] != 0))
+                    ? 1 : 0;
+    }
+
+    public static void main(String[] args) {
+
+        int n, i, j;
+
+        int a[][] = new int[10][10];
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter no of vertices");
+
+        n = sc.nextInt();
+
+        System.out.println("Enter the weighted matrix");
+
+        for (i = 1; i <= n; i++)
+            for (j = 1; j <= n; j++)
+                a[i][j] = sc.nextInt();
+
+        Warshalls f = new Warshalls();
+
+        f.warsh(a, n);
+
+        System.out.println("The shortest path matrix is");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++) {
+
+                System.out.print(a[j][i] + " ");
+            }
+
+            System.out.println();
+        }
+    }
+}
+HAMILTON
+package javaapplication11;
+
+import java.util.Scanner;
+
+public class P12new {
+
+    static int[] x = new int[25];
+
+    static void Next_Vertex(int G[][], int n, int k) {
+
+        int j;
+
+        while (true) {
+
+            x[k] = (x[k] + 1) % (n + 1);
+
+            if (x[k] == 0)
+                return;
+
+            if (G[x[k - 1]][x[k]] != 0) {
+
+                for (j = 1; j <= k - 1; j++) {
+
+                    if (x[j] == x[k])
+                        break;
+                }
+
+                if (j == k) {
+
+                    if ((k < n) ||
+                       ((k == n) && (G[x[n]][x[1]] != 0)))
+                        return;
+                }
+            }
+        }
+    }
+
+    static void H_Cycle(int G[][], int n, int k) {
+
+        int i;
+
+        while (true) {
+
+            Next_Vertex(G, n, k);
+
+            if (x[k] == 0)
+                return;
+
+            if (k == n) {
+
+                System.out.println("\n");
+
+                for (i = 1; i <= n; i++)
+                    System.out.print(x[i] + "-->");
+
+                System.out.println(x[1]);
+            }
+
+            else
+                H_Cycle(G, n, k + 1);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        int i, j, n;
+
+        int[][] G = new int[25][25];
+
+        Scanner read = new Scanner(System.in);
+
+        System.out.println(
+                "Enter the number of vertices of the graph");
+
+        n = read.nextInt();
+
+        System.out.println("Enter the Path adjacency matrix");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++) {
+
+                G[i][j] = read.nextInt();
+                x[i] = 0;
+            }
+        }
+
+        x[1] = 1;
+
+        System.out.println("\n Hamiltonian Cycles are");
+
+        H_Cycle(G, n, 2);
+    }
+}
+NQUEEN
+import java.util.Scanner;
+
+public class NQueens {
+
+    static int[] x = new int[20];
+
+    static boolean place(int k, int i) {
+
+        for (int j = 1; j < k; j++) {
+
+            if (x[j] == i ||
+                Math.abs(x[j] - i) == Math.abs(j - k)) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    static void nQueens(int k, int n) {
+
+        for (int i = 1; i <= n; i++) {
+
+            if (place(k, i)) {
+
+                x[k] = i;
+
+                if (k == n) {
+
+                    printSolution(n);
+                }
+
+                else {
+
+                    nQueens(k + 1, n);
+                }
+            }
+        }
+    }
+
+    static void printSolution(int n) {
+
+        System.out.println("\nSolution:");
+
+        for (int i = 1; i <= n; i++) {
+
+            for (int j = 1; j <= n; j++) {
+
+                if (x[i] == j)
+                    System.out.print("Q ");
+                else
+                    System.out.print(". ");
+            }
+
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of Queens: ");
+
+        int n = sc.nextInt();
+
+        nQueens(1, n);
+    }
+}
+TSP
+import java.util.*;
+
+public class travel {
+
+    public static void main(String[] args) {
+
+        int c[][] = new int[10][10];
+        int tour[] = new int[10];
+
+        Scanner in = new Scanner(System.in);
+
+        int i, j, cost;
+
+        System.out.println(
+                "**** TSP DYNAMIC PROGRAMMING *******");
+
+        System.out.println("Enter the number of cities: ");
+
+        int n = in.nextInt();
+
+        if (n == 1) {
+
+            System.out.println("Path is not possible");
+            System.exit(0);
+        }
+
+        System.out.println("Enter the cost matrix");
+
+        for (i = 1; i <= n; i++)
+            for (j = 1; j <= n; j++)
+                c[i][j] = in.nextInt();
+
+        System.out.println("The entered cost matrix is");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++) {
+
+                System.out.print(c[i][j] + "\t");
+            }
+
+            System.out.println();
+        }
+
+        for (i = 1; i <= n; i++)
+            tour[i] = i;
+
+        cost = tspdp(c, tour, 1, n);
+
+        System.out.println("The accurate path is");
+
+        for (i = 1; i <= n; i++)
+            System.out.print(tour[i] + "->");
+
+        System.out.println("1");
+
+        System.out.println(
+                "The accurate mincost is " + cost);
+
+        System.out.println(
+                "******* ************* ***************");
+    }
+
+    static int tspdp(int c[][],
+                     int tour[],
+                     int start,
+                     int n) {
+
+        int mintour[] = new int[10];
+        int temp[] = new int[10];
+
+        int mincost = 999, ccost, i, j, k;
+
+        if (start == n - 1) {
+
+            return (c[tour[n - 1]][tour[n]]
+                    + c[tour[n]][1]);
+        }
+
+        for (i = start + 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++)
+                temp[j] = tour[j];
+
+            temp[start + 1] = tour[i];
+            temp[i] = tour[start + 1];
+
+            if ((c[tour[start]][tour[i]]
+                + (ccost = tspdp(c,
+                                 temp,
+                                 start + 1,
+                                 n)))
+                < mincost) {
+
+                mincost =
+                        c[tour[start]][tour[i]]
+                        + ccost;
+
+                for (k = 1; k <= n; k++)
+                    mintour[k] = temp[k];
+            }
+        }
+
+        for (i = 1; i <= n; i++)
+            tour[i] = mintour[i];
+
+        return mincost;
+    }
+}
+0/1 KNAPSACK
+import java.util.Scanner;
+
+public class knap {
+
+    public static void main(String[] args) {
+
+        int v[][] = new int[30][30];
+        int w[] = new int[10];
+        int p[] = new int[10];
+
+        Scanner in = new Scanner(System.in);
+
+        int i, j;
+
+        System.out.println(
+                "******** KNAPSACK PROBLEM ***********");
+
+        System.out.println(
+                "Enter the total number of items: ");
+
+        int n = in.nextInt();
+
+        System.out.println(
+                "Enter the weight of each item: ");
+
+        for (i = 1; i <= n; i++)
+            w[i] = in.nextInt();
+
+        System.out.println(
+                "Enter the profit of each item: ");
+
+        for (i = 1; i <= n; i++)
+            p[i] = in.nextInt();
+
+        System.out.println(
+                "Enter the knapsack capacity: ");
+
+        int m = in.nextInt();
+
+        displayinfo(m, n, w, p);
+
+        knapsack(m, n, w, p, v);
+
+        System.out.println(
+                "The contents of the knapsack table are");
+
+        for (i = 0; i <= n; i++) {
+
+            for (j = 0; j <= m; j++) {
+
+                System.out.print(v[i][j] + " ");
+            }
+
+            System.out.println();
+        }
+
+        optimal(m, n, w, v);
+    }
+
+    static void displayinfo(
+            int m, int n, int w[], int p[]) {
+
+        System.out.println(
+                "Entered information about knapsack problem are");
+
+        System.out.println("ITEM\tWEIGHT\tPROFIT");
+
+        for (int i = 1; i <= n; i++)
+            System.out.println(
+                    i + "\t" + w[i] + "\t" + p[i]);
+
+        System.out.println("Capacity = " + m);
+    }
+
+    static void knapsack(
+            int m, int n,
+            int w[], int p[],
+            int v[][]) {
+
+        for (int i = 0; i <= n; i++) {
+
+            for (int j = 0; j <= m; j++) {
+
+                if (i == 0 || j == 0)
+                    v[i][j] = 0;
+
+                else if (j < w[i])
+                    v[i][j] = v[i - 1][j];
+
+                else
+                    v[i][j] =
+                            max(v[i - 1][j],
+                            v[i - 1][j - w[i]]
+                            + p[i]);
+            }
+        }
+    }
+
+    private static int max(int i, int j) {
+
+        if (i > j)
+            return i;
+        else
+            return j;
+    }
+
+    static void optimal(
+            int m, int n,
+            int w[], int v[][]) {
+
+        int i = n, j = m, item = 0;
+
+        int x[] = new int[10];
+
+        while (i != 0 && j != 0) {
+
+            if (v[i][j] != v[i - 1][j]) {
+
+                x[i] = 1;
+                j = j - w[i];
+            }
+
+            i = i - 1;
+        }
+
+        System.out.println(
+                "Optimal solution is :" + v[n][m]);
+
+        System.out.println("Selected items are: ");
+
+        for (i = 1; i <= n; i++)
+
+            if (x[i] == 1) {
+
+                System.out.print(i + " ");
+                item = 1;
+            }
+
+        if (item == 0)
+            System.out.println(
+                    "NIL\t Sorry ! No item can be placed in Knapsack");
+
+        System.out.println(
+                "\n***************************************");
+    }
+}
+FLOYD
+import java.util.Scanner;
+
+public class floyd {
+
+    public static void main(String[] args) {
+
+        int a[][] = new int[10][10];
+        int i, j;
+
+        Scanner in = new Scanner(System.in);
+
+        System.out.println(
+                "***********FLOYD'S ALGORITHM**********");
+
+        System.out.println(
+                "Enter the number of vertices: ");
+
+        int n = in.nextInt();
+
+        System.out.println(
+                "Enter the adjacency matrix");
+
+        for (i = 1; i <= n; i++)
+            for (j = 1; j <= n; j++)
+                a[i][j] = in.nextInt();
+
+        System.out.println(
+                "Entered adjacency matrix is: ");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++) {
+
+                System.out.print(a[i][j] + "\t");
+            }
+
+            System.out.println();
+        }
+
+        floydalgo(a, n);
+
+        System.out.println(
+                "All pair shortest path matrix:");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++)
+                System.out.print(a[i][j] + "\t");
+
+            System.out.println();
+        }
+
+        System.out.println(
+                "************ ********* **************");
+    }
+
+    static void floydalgo(int a[][], int n) {
+
+        for (int k = 1; k <= n; k++) {
+
+            for (int i = 1; i <= n; i++)
+
+                for (int j = 1; j <= n; j++)
+
+                    a[i][j] =
+                            min(a[i][j],
+                            a[i][k] + a[k][j]);
+        }
+    }
+
+    static int min(int a, int b) {
+
+        if (a > b)
+            return b;
+        else
+            return a;
+    }
+}
+DIJKSTRAS
+import java.util.*;
+
+public class dijkstra {
+
+    public static void main(String[] args) {
+
+        int i, j;
+
+        int dist[] = new int[10];
+        int visited[] = new int[10];
+        int cost[][] = new int[10][10];
+        int path[] = new int[10];
+
+        Scanner in = new Scanner(System.in);
+
+        System.out.println(
+                "**** DIJKSTRA'S ALGORITHM ******");
+
+        System.out.println(
+                "Enter the number of nodes: ");
+
+        int n = in.nextInt();
+
+        System.out.println("Enter the cost matrix");
+
+        for (i = 1; i <= n; i++)
+            for (j = 1; j <= n; j++)
+                cost[i][j] = in.nextInt();
+
+        System.out.println(
+                "The entered cost matrix is");
+
+        for (i = 1; i <= n; i++) {
+
+            for (j = 1; j <= n; j++) {
+
+                System.out.print(cost[i][j] + "\t");
+            }
+
+            System.out.println();
+        }
+
+        System.out.println(
+                "Enter the source vertex: ");
+
+        int sv = in.nextInt();
+
+        dij(cost, dist, sv, n, path, visited);
+
+        printpath(sv, n, dist, path, visited);
+
+        System.out.println(
+                "\n********* *************** *********");
+    }
+
+    static void dij(
+            int cost[][],
+            int dist[],
+            int sv,
+            int n,
+            int path[],
+            int visited[]) {
+
+        int count = 2, min, v = 0;
+
+        for (int i = 1; i <= n; i++) {
+
+            visited[i] = 0;
+
+            dist[i] = cost[sv][i];
+
+            if (cost[sv][i] == 999)
+                path[i] = 0;
+            else
+                path[i] = sv;
+        }
+
+        visited[sv] = 1;
+
+        while (count <= n) {
+
+            min = 999;
+
+            for (int w = 1; w <= n; w++)
+
+                if ((dist[w] < min)
+                        && (visited[w] == 0)) {
+
+                    min = dist[w];
+                    v = w;
+                }
+
+            visited[v] = 1;
+
+            count++;
+
+            for (int w = 1; w <= n; w++) {
+
+                if (dist[w] >
+                        (dist[v] + cost[v][w])) {
+
+                    dist[w] =
+                            dist[v] + cost[v][w];
+
+                    path[w] = v;
+                }
+            }
+        }
+    }
+
+    static void printpath(
+            int sv,
+            int n,
+            int dist[],
+            int path[],
+            int visited[]) {
+
+        for (int w = 1; w <= n; w++) {
+
+            if (visited[w] == 1 && w != sv) {
+
+                System.out.println(
+                        "The shortest distance between ");
+
+                System.out.println(
+                        sv + "-> =" + w +
+                        " is :" + dist[w]);
+
+                int t = path[w];
+
+                System.out.println("The path is:");
+
+                System.out.print(" " + w);
+
+                while (t != sv) {
+
+                    System.out.print("<-->" + t);
+
+                    t = path[t];
+                }
+
+                System.out.print("<-->" + sv);
+            }
+        }
+    }
+}
