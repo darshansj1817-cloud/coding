@@ -1,0 +1,543 @@
+FACTORIAL
+package Darshan;
+
+import java.util.Scanner;
+
+public class FactorialRecursive {
+
+    public static long factorial(int n) {
+        if (n == 0)
+            return 1;
+
+        return n * factorial(n - 1);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter a number: ");
+        int n = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        long result = factorial(n);
+
+        long end = System.nanoTime();
+
+        System.out.println("Factorial of " + n + " is : " + result);
+        System.out.println("Execution Time (nanoseconds): " + (end - start));
+    }
+}
+FIBONACCI
+package Darshan;
+
+import java.util.Scanner;
+
+public class FibonacciRecursive {
+
+    public static int fibonacci(int n) {
+        if (n <= 1)
+            return n;
+
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the number of terms: ");
+        int n = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        System.out.println("Fibonacci Series:");
+
+        for (int i = 0; i < n; i++) {
+            System.out.print(fibonacci(i) + " ");
+        }
+
+        long end = System.nanoTime();
+
+        System.out.println();
+        System.out.println("Execution Time (ns): " + (end - start));
+    }
+}
+UNIQUE
+package Darshan;
+
+import java.util.Scanner;
+
+public class UniqueArray {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+
+        int[] arr = new int[n];
+
+        System.out.println("Enter array elements:");
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+
+        long start = System.nanoTime();
+
+        boolean isUnique = true;
+
+        for (int i = 0; i < n; i++) {
+
+            for (int j = i + 1; j < n; j++) {
+
+                if (arr[i] == arr[j]) {
+                    isUnique = false;
+                    break;
+                }
+            }
+
+            if (!isUnique)
+                break;
+        }
+
+        long end = System.nanoTime();
+
+        if (isUnique)
+            System.out.println("All elements are unique.");
+        else
+            System.out.println("Array contains duplicate elements.");
+
+        System.out.println("Execution Time (ns): " + (end - start));
+    }
+}
+TOWER
+package Darshan;
+
+import java.util.Scanner;
+
+public class TowerOfHanoi {
+
+    static void solve(int n, char source, char auxiliary, char destination) {
+
+        if (n == 1) {
+            System.out.println(
+                    "Move disk 1 from " + source + " to " + destination);
+            return;
+        }
+
+        solve(n - 1, source, destination, auxiliary);
+
+        System.out.println(
+                "Move disk " + n + " from " + source + " to " + destination);
+
+        solve(n - 1, auxiliary, source, destination);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of disks: ");
+        int n = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        solve(n, 'A', 'B', 'C');
+
+        long end = System.nanoTime();
+
+        System.out.println("Execution Time (ns): " + (end - start));
+    }
+}
+PRIME
+package Darshan;
+
+import java.util.Scanner;
+
+public class SievePrime {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter limit: ");
+        int limit = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        boolean[] prime = new boolean[limit + 1];
+
+        for (int i = 2; i <= limit; i++) {
+            prime[i] = true;
+        }
+
+        for (int p = 2; p * p <= limit; p++) {
+
+            if (prime[p]) {
+
+                for (int j = p * p; j <= limit; j += p) {
+                    prime[j] = false;
+                }
+            }
+        }
+
+        System.out.println("Prime numbers up to " + limit + " :");
+
+        for (int i = 2; i <= limit; i++) {
+
+            if (prime[i]) {
+                System.out.print(i + " ");
+            }
+        }
+
+        long end = System.nanoTime();
+
+        System.out.println();
+        System.out.println("Execution Time (ns): " + (end - start));
+    }
+}
+LINEAR SEARCH
+package Darshan;
+
+import java.util.Scanner;
+
+public class LinearSearch {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+
+        int[] arr = new int[n];
+
+        System.out.println("Enter array elements:");
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.print("Enter key element to search: ");
+        int key = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        int pos = -1;
+
+        for (int i = 0; i < n; i++) {
+
+            if (arr[i] == key) {
+                pos = i;
+                break;
+            }
+        }
+
+        long end = System.nanoTime();
+
+        if (pos != -1)
+            System.out.println("Element found at position " + (pos + 1));
+        else
+            System.out.println("Element not found");
+
+        System.out.println("Execution Time (ns): " + (end - start));
+    }
+}
+MERGE SORT
+import java.util.*;
+
+public class MergeSort {
+
+    static void mergeSort(int a[], int l, int h) {
+        if (l < h) {
+            int m = (l + h) / 2;
+
+            mergeSort(a, l, m);
+            mergeSort(a, m + 1, h);
+
+            merge(a, l, m, h);
+        }
+    }
+
+    static void merge(int a[], int l, int m, int h) {
+
+        int i = l;
+        int j = m + 1;
+        int k = l;
+
+        int b[] = new int[a.length];
+
+        while (i <= m && j <= h) {
+
+            if (a[i] <= a[j])
+                b[k++] = a[i++];
+            else
+                b[k++] = a[j++];
+        }
+
+        while (i <= m)
+            b[k++] = a[i++];
+
+        while (j <= h)
+            b[k++] = a[j++];
+
+        for (i = l; i <= h; i++)
+            a[i] = b[i];
+    }
+
+    public static void main(String args[]) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Merge Sort Algorithm");
+        System.out.print("Enter number of elements: ");
+
+        int n = sc.nextInt();
+        int a[] = new int[n];
+
+        System.out.println("Enter array elements:");
+
+        for (int i = 0; i < n; i++)
+            a[i] = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        mergeSort(a, 0, n - 1);
+
+        long end = System.nanoTime();
+
+        System.out.println("Sorted Elements:");
+
+        for (int i = 0; i < n; i++)
+            System.out.print(a[i] + " ");
+
+        System.out.println("\nTime Taken: " + (end - start) + " ns");
+    }
+}
+QUICK SORT
+import java.util.*;
+
+public class QuickSort {
+
+    static void quickSort(int a[], int l, int h) {
+
+        if (l < h) {
+
+            int j = partition(a, l, h);
+
+            quickSort(a, l, j - 1);
+            quickSort(a, j + 1, h);
+        }
+    }
+
+    static int partition(int a[], int l, int h) {
+
+        int pivot = a[l];
+        int i = l + 1;
+        int j = h;
+
+        while (i <= j) {
+
+            while (i <= h && a[i] <= pivot)
+                i++;
+
+            while (a[j] > pivot)
+                j--;
+
+            if (i < j) {
+                int temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+        }
+
+        a[l] = a[j];
+        a[j] = pivot;
+
+        return j;
+    }
+
+    public static void main(String args[]) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Quick Sort Program");
+        System.out.print("Enter number of elements: ");
+
+        int n = sc.nextInt();
+
+        int a[] = new int[n];
+
+        System.out.println("Enter array elements:");
+
+        for (int i = 0; i < n; i++)
+            a[i] = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        quickSort(a, 0, n - 1);
+
+        long end = System.nanoTime();
+
+        System.out.println("Sorted Elements:");
+
+        for (int i = 0; i < n; i++)
+            System.out.print(a[i] + " ");
+
+        System.out.println("\nTime Taken: " + (end - start) + " ns");
+    }
+}
+BINARY SEARCH
+import java.util.*;
+
+public class BinarySearch {
+
+    public static int binary(int arr[], int target) {
+
+        int low = 0;
+        int high = arr.length - 1;
+
+        while (low <= high) {
+
+            int mid = (low + high) / 2;
+
+            if (arr[mid] == target)
+                return mid;
+
+            if (arr[mid] > target)
+                high = mid - 1;
+            else
+                low = mid + 1;
+        }
+
+        return -1;
+    }
+
+    public static void main(String args[]) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+
+        int arr[] = new int[n];
+
+        System.out.println("Enter sorted array elements:");
+
+        for (int i = 0; i < n; i++)
+            arr[i] = sc.nextInt();
+
+        System.out.print("Enter element to search: ");
+        int key = sc.nextInt();
+
+        long start = System.nanoTime();
+
+        int result = binary(arr, key);
+
+        long end = System.nanoTime();
+
+        if (result != -1)
+            System.out.println("Element found at index: " + result);
+        else
+            System.out.println("Element not found");
+
+        System.out.println("Time Taken: " + (end - start) + " ns");
+    }
+}
+SUBSET
+package branchsub;
+
+import java.util.*;
+
+public class Subset {
+
+    static int c = 0;
+
+    public static void main(String[] args) {
+
+        int w[] = new int[10];
+        int x[] = new int[10];
+
+        int n, d, i, sum = 0;
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("**** SUBSET PROBLEM ****");
+
+        System.out.print("Enter the number of elements: ");
+        n = sc.nextInt();
+
+        System.out.println("Enter the elements in increasing order:");
+
+        for (i = 0; i < n; i++) {
+            w[i] = sc.nextInt();
+            sum += w[i];
+        }
+
+        System.out.print("Enter the value of d: ");
+        d = sc.nextInt();
+
+        System.out.println("SUM = " + sum);
+
+        if (sum < d || w[0] > d) {
+            System.out.println("Subset is not possible");
+            sc.close();
+            return;
+        }
+
+        finalSubset(0, 0, sum, x, w, d, n);
+
+        if (c == 0)
+            System.out.println("Subset is not possible");
+
+        System.out.println("\n*****************");
+
+        sc.close();
+    }
+
+    static void finalSubset(int cs, int k, int r,
+                            int x[], int w[],
+                            int d, int n) {
+
+        x[k] = 1;
+
+        if (cs + w[k] == d) {
+
+            c++;
+
+            System.out.print("\nSolution " + c + " = { ");
+
+            for (int i = 0; i <= k; i++) {
+                if (x[i] == 1)
+                    System.out.print(w[i] + " ");
+            }
+
+            System.out.print("}");
+        }
+
+        else if (k + 1 < n &&
+                 (cs + w[k] + w[k + 1]) <= d) {
+
+            finalSubset(cs + w[k],
+                        k + 1,
+                        r - w[k],
+                        x, w, d, n);
+        }
+
+        if (k + 1 < n &&
+            (cs + r - w[k] >= d) &&
+            (cs + w[k + 1] <= d)) {
+
+            x[k] = 0;
+
+            finalSubset(cs,
+                        k + 1,
+                        r - w[k],
+                        x, w, d, n);
+        }
+    }
+}
