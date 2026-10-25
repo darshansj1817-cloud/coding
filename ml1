@@ -1,543 +1,340 @@
-FACTORIAL
-package Darshan;
+web scraping and POS (Part-of-Speech) tagging using NLTK
+pip install requests beautifulsoup4 nltk
+import requests
+from bs4 import BeautifulSoup
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk import pos_tag
+
+# Download required NLTK packages
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger_eng')
+
+# Function to extract text from a website
+def get_text(url):
+    try:
+        page = requests.get(url, timeout=10)
+        soup = BeautifulSoup(page.text, 'html.parser')
 
-import java.util.Scanner;
+        # Remove unwanted tags
+        for tag in soup(['script', 'style', 'header', 'footer', 'nav']):
+            tag.decompose()
+
+        # Extract and clean text
+        text = soup.get_text(separator=' ')
+        text = ' '.join(text.split())
 
-public class FactorialRecursive {
+        return text
 
-    public static long factorial(int n) {
-        if (n == 0)
-            return 1;
+    except Exception as e:
+        return "Error: " + str(e)
+
+# Function for POS tagging
+def tag_text(text):
+    words = word_tokenize(text)
+    tags = pos_tag(words)
+    return tags
 
-        return n * factorial(n - 1);
-    }
+# Main program
+url = "https://www.bnmit.org/"
+text = get_text(url)
 
-    public static void main(String[] args) {
+print("\n--- Scraped Text ---\n")
+print(text[:500])
 
-        Scanner sc = new Scanner(System.in);
+print("\n--- POS Tags ---\n")
+result = tag_text(text)
 
-        System.out.print("Enter a number: ");
-        int n = sc.nextInt();
+for item in result[:30]:
+    print(item)
+########
+Python program to perform Laplace smoothing for an N-gram model
 
-        long start = System.nanoTime();
+from collections import defaultdict
 
-        long result = factorial(n);
+class LaplaceSmoothing:
+    def __init__(self, corpus):
+        self.unigrams = defaultdict(int)
+        self.bigrams = defaultdict(int)
+        self.total = 0
+        self.vocab_size = 0
+        self.train(corpus)
 
-        long end = System.nanoTime();
+    def train(self, corpus):
+        vocab = set()
 
-        System.out.println("Factorial of " + n + " is : " + result);
-        System.out.println("Execution Time (nanoseconds): " + (end - start));
-    }
-}
-FIBONACCI
-package Darshan;
+        for sentence in corpus:
+            words = sentence.split()
+            vocab.update(words)
 
-import java.util.Scanner;
+            for i in range(len(words)):
+                self.unigrams[words[i]] += 1
+                self.total += 1
 
-public class FibonacciRecursive {
+                if i > 0:
+                    self.bigrams[(words[i-1], words[i])] += 1
 
-    public static int fibonacci(int n) {
-        if (n <= 1)
-            return n;
+        self.vocab_size = len(vocab)
 
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
+    def bigram_prob(self, w1, w2):
+        return (self.bigrams[(w1, w2)] + 1) / (
+            self.unigrams[w1] + self.vocab_size
+        )
 
-    public static void main(String[] args) {
+    def display(self):
+        print("Bigrams:", dict(self.bigrams))
+        print("Unigrams:", dict(self.unigrams))
+        print("Vocabulary Size:", self.vocab_size)
 
-        Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter the number of terms: ");
-        int n = sc.nextInt();
+corpus = [
+    "the cat sat on the mat",
+    "the dog sat on the mat"
+]
 
-        long start = System.nanoTime();
+model = LaplaceSmoothing(corpus)
+model.display()
 
-        System.out.println("Fibonacci Series:");
+print("P(dog | a): {:.3f}".format(
+    model.bigram_prob("a", "dog")
+))
+######
+Python program to calculate Good-Turing frequency
+from collections import defaultdict
 
-        for (int i = 0; i < n; i++) {
-            System.out.print(fibonacci(i) + " ");
-        }
+def build_bigram_model(tokens):
+    model = defaultdict(lambda: defaultdict(int))
 
-        long end = System.nanoTime();
+    for i in range(len(tokens) - 1):
+        model[tokens[i]][tokens[i + 1]] += 1
 
-        System.out.println();
-        System.out.println("Execution Time (ns): " + (end - start));
-    }
-}
-UNIQUE
-package Darshan;
+    return model
 
-import java.util.Scanner;
 
-public class UniqueArray {
+def good_turing(model):
+    freq = defaultdict(int)
+    total = 0
 
-    public static void main(String[] args) {
+    # Count frequencies of frequencies
+    for context in model:
+        for count in model[context].values():
+            freq[count] += 1
+            total += count
 
-        Scanner sc = new Scanner(System.in);
+    probs = defaultdict(dict)
 
-        System.out.print("Enter number of elements: ");
-        int n = sc.nextInt();
+    # Apply Good-Turing formula
+    for context in model:
+        for word, count in model[context].items():
+            nc = freq[count]
+            nc1 = freq.get(count + 1, 0)
 
-        int[] arr = new int[n];
+            if nc1 == 0 or nc == 0:
+                new_count = count
+            else:
+                new_count = (count + 1) * nc1 / nc
 
-        System.out.println("Enter array elements:");
+            probs[context][word] = new_count / total if total else 0
+
+    unseen = freq[1] / total if total else 0
+    return probs, unseen
 
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
-        }
+
+if __name__ == "__main__":
+    text = "I love natural language processing and I love artificial intelligence"
+    tokens = text.split()
+
+    model = build_bigram_model(tokens)
+    probs, unseen = good_turing(model)
 
-        long start = System.nanoTime();
+    print("Smoothed Bigram Probabilities:\n")
+
+    for context in probs:
+        for word, prob in probs[context].items():
+            print("P({} | {}) = {:.6f}".format(
+                word, context, prob
+            ))
 
-        boolean isUnique = true;
+    print("\nProbability for unseen bigrams: {:.6f}".format(unseen))
+
+    test = "I love machine learning"
+    words = test.split()
+
+    print("\nTest Bigram Probabilities:\n")
+
+    for i in range(len(words) - 1):
+        context = words[i]
+        word = words[i + 1]
+
+        prob = probs[context].get(word, unseen)
+        print("P({} | {}) = {:.6f}".format(
+            word, context, prob
+        ))
+#######
+Python program to implement a Bigram Model and calculate the probability of a test sentence
+from collections import defaultdict
+
+# Training corpus
+corpus = [
+    "i love natural language processing",
+    "i love machine learning",
+    "i enjoy natural language processing"
+]
+
+# Build bigram model
+unigrams = defaultdict(int)
+bigrams = defaultdict(int)
+
+for sentence in corpus:
+    words = sentence.split()
+
+    for i in range(len(words)):
+        unigrams[words[i]] += 1
+
+        if i > 0:
+            bigrams[(words[i-1], words[i])] += 1
+
+# Calculate bigram probability
+def bigram_probability(w1, w2):
+    return bigrams[(w1, w2)] / unigrams[w1]
+
+# Test sentence
+test = "i love natural language processing"
+words = test.split()
+
+probability = 1.0
+
+for i in range(1, len(words)):
+    p = bigram_probability(words[i-1], words[i])
+    probability *= p
+    print("P({} | {}) = {:.3f}".format(
+        words[i], words[i-1], p
+    ))
+
+print("\nProbability of test sentence =", round(probability, 6))
+
+#########
+Python program to implement Text Classification
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+
+# Training data
+texts = [
+    "I love this movie",
+    "This film is excellent",
+    "The movie is amazing",
+    "I hate this movie",
+    "This film is terrible",
+    "The movie is boring"
+]
+
+labels = [
+    "Positive",
+    "Positive",
+    "Positive",
+    "Negative",
+    "Negative",
+    "Negative"
+]
 
-        for (int i = 0; i < n; i++) {
+# Create and train the classifier
+model = make_pipeline(
+    CountVectorizer(),
+    MultinomialNB()
+)
 
-            for (int j = i + 1; j < n; j++) {
+model.fit(texts, labels)
 
-                if (arr[i] == arr[j]) {
-                    isUnique = false;
-                    break;
-                }
-            }
+# Test the classifier
+test_texts = [
+    "This movie is amazing",
+    "This film is boring"
+]
 
-            if (!isUnique)
-                break;
-        }
+predictions = model.predict(test_texts)
 
-        long end = System.nanoTime();
+# Display results
+print("Text Classification Results:")
 
-        if (isUnique)
-            System.out.println("All elements are unique.");
-        else
-            System.out.println("Array contains duplicate elements.");
+for text, label in zip(test_texts, predictions):
+    print(text, ":", label)
+#######
+Python program to calculate vector similarity in semantic space
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-        System.out.println("Execution Time (ns): " + (end - start));
-    }
-}
-TOWER
-package Darshan;
+# Sample sentences
+sentences = [
+    "I love natural language processing",
+    "I enjoy natural language processing",
+    "The weather is very cold today"
+]
 
-import java.util.Scanner;
+# Convert sentences into vectors
+vectorizer = TfidfVectorizer()
+vectors = vectorizer.fit_transform(sentences)
 
-public class TowerOfHanoi {
+# Calculate cosine similarity
+similarity = cosine_similarity(vectors)
 
-    static void solve(int n, char source, char auxiliary, char destination) {
+# Display similarity matrix
+print("Cosine Similarity Matrix:")
 
-        if (n == 1) {
-            System.out.println(
-                    "Move disk 1 from " + source + " to " + destination);
-            return;
-        }
+for row in similarity:
+    print([round(value, 2) for value in row])
 
-        solve(n - 1, source, destination, auxiliary);
+# Compare two sentences
+print("\nSimilarity between Sentence 1 and Sentence 2:",
+      round(similarity[0][1], 2))
 
-        System.out.println(
-                "Move disk " + n + " from " + source + " to " + destination);
+#######
+Python program to identify the context of ambiguous words using contextual word embeddings with BERT
+pip install transformers torch scikit-learn
+from transformers import BertTokenizer, BertModel
+import torch
+from sklearn.metrics.pairwise import cosine_similarity
 
-        solve(n - 1, auxiliary, source, destination);
-    }
+# Load pretrained BERT model
+tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+model = BertModel.from_pretrained("bert-base-uncased")
 
-    public static void main(String[] args) {
+# Sentences containing the ambiguous word "bank"
+sentences = [
+    "He deposited money in the bank",
+    "They sat on the bank of the river"
+]
 
-        Scanner sc = new Scanner(System.in);
+# Extract BERT embeddings
+embeddings = []
 
-        System.out.print("Enter number of disks: ");
-        int n = sc.nextInt();
+for sentence in sentences:
+    inputs = tokenizer(sentence, return_tensors="pt")
 
-        long start = System.nanoTime();
+    with torch.no_grad():
+        outputs = model(**inputs)
 
-        solve(n, 'A', 'B', 'C');
+    tokens = tokenizer.convert_ids_to_tokens(
+        inputs["input_ids"][0]
+    )
 
-        long end = System.nanoTime();
+    # Find the embedding of the word "bank"
+    index = tokens.index("bank")
+    word_embedding = outputs.last_hidden_state[0, index, :]
 
-        System.out.println("Execution Time (ns): " + (end - start));
-    }
-}
-PRIME
-package Darshan;
+    embeddings.append(word_embedding.numpy())
 
-import java.util.Scanner;
+# Calculate similarity
+similarity = cosine_similarity(
+    [embeddings[0]], [embeddings[1]]
+)[0][0]
 
-public class SievePrime {
+# Display results
+print("Sentence 1:", sentences[0])
+print("Sentence 2:", sentences[1])
 
-    public static void main(String[] args) {
+print("\nContextual embeddings extracted for 'bank'.")
 
-        Scanner sc = new Scanner(System.in);
+print("Cosine similarity:", round(float(similarity), 4))
 
-        System.out.print("Enter limit: ");
-        int limit = sc.nextInt();
-
-        long start = System.nanoTime();
-
-        boolean[] prime = new boolean[limit + 1];
-
-        for (int i = 2; i <= limit; i++) {
-            prime[i] = true;
-        }
-
-        for (int p = 2; p * p <= limit; p++) {
-
-            if (prime[p]) {
-
-                for (int j = p * p; j <= limit; j += p) {
-                    prime[j] = false;
-                }
-            }
-        }
-
-        System.out.println("Prime numbers up to " + limit + " :");
-
-        for (int i = 2; i <= limit; i++) {
-
-            if (prime[i]) {
-                System.out.print(i + " ");
-            }
-        }
-
-        long end = System.nanoTime();
-
-        System.out.println();
-        System.out.println("Execution Time (ns): " + (end - start));
-    }
-}
-LINEAR SEARCH
-package Darshan;
-
-import java.util.Scanner;
-
-public class LinearSearch {
-
-    public static void main(String[] args) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Enter number of elements: ");
-        int n = sc.nextInt();
-
-        int[] arr = new int[n];
-
-        System.out.println("Enter array elements:");
-
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
-        }
-
-        System.out.print("Enter key element to search: ");
-        int key = sc.nextInt();
-
-        long start = System.nanoTime();
-
-        int pos = -1;
-
-        for (int i = 0; i < n; i++) {
-
-            if (arr[i] == key) {
-                pos = i;
-                break;
-            }
-        }
-
-        long end = System.nanoTime();
-
-        if (pos != -1)
-            System.out.println("Element found at position " + (pos + 1));
-        else
-            System.out.println("Element not found");
-
-        System.out.println("Execution Time (ns): " + (end - start));
-    }
-}
-MERGE SORT
-import java.util.*;
-
-public class MergeSort {
-
-    static void mergeSort(int a[], int l, int h) {
-        if (l < h) {
-            int m = (l + h) / 2;
-
-            mergeSort(a, l, m);
-            mergeSort(a, m + 1, h);
-
-            merge(a, l, m, h);
-        }
-    }
-
-    static void merge(int a[], int l, int m, int h) {
-
-        int i = l;
-        int j = m + 1;
-        int k = l;
-
-        int b[] = new int[a.length];
-
-        while (i <= m && j <= h) {
-
-            if (a[i] <= a[j])
-                b[k++] = a[i++];
-            else
-                b[k++] = a[j++];
-        }
-
-        while (i <= m)
-            b[k++] = a[i++];
-
-        while (j <= h)
-            b[k++] = a[j++];
-
-        for (i = l; i <= h; i++)
-            a[i] = b[i];
-    }
-
-    public static void main(String args[]) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("Merge Sort Algorithm");
-        System.out.print("Enter number of elements: ");
-
-        int n = sc.nextInt();
-        int a[] = new int[n];
-
-        System.out.println("Enter array elements:");
-
-        for (int i = 0; i < n; i++)
-            a[i] = sc.nextInt();
-
-        long start = System.nanoTime();
-
-        mergeSort(a, 0, n - 1);
-
-        long end = System.nanoTime();
-
-        System.out.println("Sorted Elements:");
-
-        for (int i = 0; i < n; i++)
-            System.out.print(a[i] + " ");
-
-        System.out.println("\nTime Taken: " + (end - start) + " ns");
-    }
-}
-QUICK SORT
-import java.util.*;
-
-public class QuickSort {
-
-    static void quickSort(int a[], int l, int h) {
-
-        if (l < h) {
-
-            int j = partition(a, l, h);
-
-            quickSort(a, l, j - 1);
-            quickSort(a, j + 1, h);
-        }
-    }
-
-    static int partition(int a[], int l, int h) {
-
-        int pivot = a[l];
-        int i = l + 1;
-        int j = h;
-
-        while (i <= j) {
-
-            while (i <= h && a[i] <= pivot)
-                i++;
-
-            while (a[j] > pivot)
-                j--;
-
-            if (i < j) {
-                int temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
-            }
-        }
-
-        a[l] = a[j];
-        a[j] = pivot;
-
-        return j;
-    }
-
-    public static void main(String args[]) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("Quick Sort Program");
-        System.out.print("Enter number of elements: ");
-
-        int n = sc.nextInt();
-
-        int a[] = new int[n];
-
-        System.out.println("Enter array elements:");
-
-        for (int i = 0; i < n; i++)
-            a[i] = sc.nextInt();
-
-        long start = System.nanoTime();
-
-        quickSort(a, 0, n - 1);
-
-        long end = System.nanoTime();
-
-        System.out.println("Sorted Elements:");
-
-        for (int i = 0; i < n; i++)
-            System.out.print(a[i] + " ");
-
-        System.out.println("\nTime Taken: " + (end - start) + " ns");
-    }
-}
-BINARY SEARCH
-import java.util.*;
-
-public class BinarySearch {
-
-    public static int binary(int arr[], int target) {
-
-        int low = 0;
-        int high = arr.length - 1;
-
-        while (low <= high) {
-
-            int mid = (low + high) / 2;
-
-            if (arr[mid] == target)
-                return mid;
-
-            if (arr[mid] > target)
-                high = mid - 1;
-            else
-                low = mid + 1;
-        }
-
-        return -1;
-    }
-
-    public static void main(String args[]) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Enter number of elements: ");
-        int n = sc.nextInt();
-
-        int arr[] = new int[n];
-
-        System.out.println("Enter sorted array elements:");
-
-        for (int i = 0; i < n; i++)
-            arr[i] = sc.nextInt();
-
-        System.out.print("Enter element to search: ");
-        int key = sc.nextInt();
-
-        long start = System.nanoTime();
-
-        int result = binary(arr, key);
-
-        long end = System.nanoTime();
-
-        if (result != -1)
-            System.out.println("Element found at index: " + result);
-        else
-            System.out.println("Element not found");
-
-        System.out.println("Time Taken: " + (end - start) + " ns");
-    }
-}
-SUBSET
-package branchsub;
-
-import java.util.*;
-
-public class Subset {
-
-    static int c = 0;
-
-    public static void main(String[] args) {
-
-        int w[] = new int[10];
-        int x[] = new int[10];
-
-        int n, d, i, sum = 0;
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("**** SUBSET PROBLEM ****");
-
-        System.out.print("Enter the number of elements: ");
-        n = sc.nextInt();
-
-        System.out.println("Enter the elements in increasing order:");
-
-        for (i = 0; i < n; i++) {
-            w[i] = sc.nextInt();
-            sum += w[i];
-        }
-
-        System.out.print("Enter the value of d: ");
-        d = sc.nextInt();
-
-        System.out.println("SUM = " + sum);
-
-        if (sum < d || w[0] > d) {
-            System.out.println("Subset is not possible");
-            sc.close();
-            return;
-        }
-
-        finalSubset(0, 0, sum, x, w, d, n);
-
-        if (c == 0)
-            System.out.println("Subset is not possible");
-
-        System.out.println("\n*****************");
-
-        sc.close();
-    }
-
-    static void finalSubset(int cs, int k, int r,
-                            int x[], int w[],
-                            int d, int n) {
-
-        x[k] = 1;
-
-        if (cs + w[k] == d) {
-
-            c++;
-
-            System.out.print("\nSolution " + c + " = { ");
-
-            for (int i = 0; i <= k; i++) {
-                if (x[i] == 1)
-                    System.out.print(w[i] + " ");
-            }
-
-            System.out.print("}");
-        }
-
-        else if (k + 1 < n &&
-                 (cs + w[k] + w[k + 1]) <= d) {
-
-            finalSubset(cs + w[k],
-                        k + 1,
-                        r - w[k],
-                        x, w, d, n);
-        }
-
-        if (k + 1 < n &&
-            (cs + r - w[k] >= d) &&
-            (cs + w[k + 1] <= d)) {
-
-            x[k] = 0;
-
-            finalSubset(cs,
-                        k + 1,
-                        r - w[k],
-                        x, w, d, n);
-        }
-    }
-}
+#######
